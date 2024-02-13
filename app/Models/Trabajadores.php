@@ -43,6 +43,7 @@ class Trabajadores extends Model
 	protected $table = 'trabajadores';
 	protected $primaryKey = 'cedula';
 	public $incrementing = false;
+	protected $hidden = ['1x10','hora_voto'];
 
 	protected $casts = [
 		'cedula' => 'int',
@@ -52,7 +53,6 @@ class Trabajadores extends Model
 		'id_parroquia' => 'int',
 		'id_gabinete' => 'int',
 		'id_ente' => 'int',
-		'id_dependencia' => 'int',
 		'voto' => 'bool',
 		'1x10' => 'int',
 		'hora_voto' => 'time without time zone'

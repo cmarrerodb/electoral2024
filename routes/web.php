@@ -22,3 +22,23 @@ Auth::routes();
 Route::get('/home', function() {
     return view('home');
 })->name('home')->middleware('auth');
+
+Route::get('/trabajadores', function() {
+    $trabajadores = App\Models\Trabajadores::all();
+    $heads = [
+        'CÉDULA',
+        'NOMBRE',
+        'ESTADO',
+        'MUNICIPIO',
+        'CIRCUITO',
+        'PARROQUIA',
+        'GABINETE',
+        'ENTE',
+        'DEPENDENCIA',
+        'TELÉFONO',
+        'VOTÓ',
+        'OBSERVACIONES',
+    ];
+    return view('trabajadores',compact('trabajadores','heads'));
+})->name('home')->middleware('auth');
+
