@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-
+@section('title','Trabajadores')
 @section('content_header')
     <h1 class="m-0 text-dark">Trabajadores</h1>
 @stop

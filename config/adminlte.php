@@ -535,6 +535,9 @@ return [
     'plugins' => [
         'Datatables' => [
             'active' => true,
+            'language' => [
+                'url' => resource_path('lang/es.json'),
+            ], 
             'files' => [
                 [
                     'type' => 'js',
