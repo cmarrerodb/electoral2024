@@ -11,39 +11,36 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class User
+ * Class CneEnte
  * 
  * @property int $id
- * @property string $name
- * @property string $email
- * @property Carbon|null $email_verified_at
- * @property string $password
- * @property string|null $remember_token
+ * @property int $cedula
+ * @property string $nombre
+ * @property string $estado
+ * @property string $municipio
+ * @property string $parroquia
+ * @property string $centro
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
  *
  * @package App\Models
  */
-class User extends Model
+class CneEnte extends Model
 {
 	use SoftDeletes;
-	protected $table = 'users';
+	protected $table = 'cne_entes';
 
 	protected $casts = [
-		'email_verified_at' => 'datetime'
-	];
-
-	protected $hidden = [
-		'password',
-		'remember_token'
+		'cedula' => 'int'
 	];
 
 	protected $fillable = [
-		'name',
-		'email',
-		'email_verified_at',
-		'password',
-		'remember_token'
+		'cedula',
+		'nombre',
+		'estado',
+		'municipio',
+		'parroquia',
+		'centro'
 	];
 }
