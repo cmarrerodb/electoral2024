@@ -15,7 +15,6 @@ class TrabajadorController extends Controller
     {
         // $trabajadores = Trabajadores::all();
         $trabajadores = DB::table('vtrabajadores')->get();
-        info($trabajadores);
         $heads = [
             'ACCIONES',
             'CÉDULA',
