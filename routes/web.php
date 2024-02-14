@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TrabajadorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,31 +15,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes();
-
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 Auth::routes();
-
 Route::get('/home', function() {
     return view('home');
 })->name('home')->middleware('auth');
-
-Route::get('/trabajadores', function() {
-    $trabajadores = App\Models\Trabajadores::all();
-    $heads = [
-        'CÉDULA',
-        'NOMBRE',
-        'ESTADO',
-        'MUNICIPIO',
-        'CIRCUITO',
-        'PARROQUIA',
-        'GABINETE',
-        'ENTE',
-        'DEPENDENCIA',
-        'TELÉFONO',
-        'VOTÓ',
-        'OBSERVACIONES',
-    ];
-    return view('trabajadores',compact('trabajadores','heads'));
-})->name('home')->middleware('auth');
-
+Route::middleware(['auth'])->group(function () {
+    Route::resource('trabajadores', TrabajadorController::class);
+});

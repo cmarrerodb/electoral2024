@@ -11,18 +11,24 @@
                 <div class="card-body">
                     <x-adminlte-datatable id="table1" :heads="$heads" head-theme="dark" striped hoverable  with-buttons>
                         @foreach($trabajadores as $trabajador)
-                            <tr>
+                                <td>
+                                    <!-- <button type="button" class="btn btn-dark btn-sm btn-ver"><i class="fas fa-eye"></i></button> -->
+                                    <button type="button" class="btn btn-primary btn-sm btn-editar" title="Editar"><i class="fas fa-edit"></i></button>
+                                    <button type="button" class="btn btn-danger btn-sm btn-eliminar" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                </td>
                                 <td>{{$trabajador->cedula }}</td>
                                 <td>{{$trabajador->nombre }}</td>
-                                <td>{{$trabajador->id_estado }}</td>
-                                <td>{{$trabajador->id_municipio }}</td>
-                                <td>{{$trabajador->id_circuito }}</td>
-                                <td>{{$trabajador->id_parroquia }}</td>
-                                <td>{{$trabajador->id_gabinete }}</td>
-                                <td>{{$trabajador->id_ente }}</td>
-                                <td>{{$trabajador->id_dependencia }}</td>
-                                <td>{{$trabajador->telfono }}</td>
+                                <td>{{$trabajador->estado }}</td>
+                                <td>{{$trabajador->municipio }}</td>
+                                <td>{{$trabajador->circuito }}</td>
+                                <td>{{$trabajador->parroquia }}</td>
+                                <td>{{$trabajador->gabinete }}</td>
+                                <td>{{$trabajador->ente }}</td>
+                                <td>{{$trabajador->nombre_dependencia }}</td>
+                                <td>{{$trabajador->telefono }}</td>
                                 <td>{{$trabajador->voto }}</td>
+                                <td>{{$trabajador->movilizacion }}</td>
+                                <td>{{$trabajador->hora_voto }}</td>
                                 <td>{{$trabajador->observaciones }}</td>
                             </tr>
                         @endforeach
