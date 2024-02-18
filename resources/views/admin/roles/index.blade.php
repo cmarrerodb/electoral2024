@@ -5,6 +5,11 @@
     <h1 class="m-0 text-dark">Listar roles</h1>
 @stop
 @section('content')
+    @if (session('info'))
+        <div class="alert alert-danger">
+            {{session('info')}}
+        </div>
+    @endif
     <div class="card">
         <div class="card-body">
             <table class="table table-striped">
@@ -21,13 +26,15 @@
                         <td>{{$role->id}}</td>
                         <td>{{$role->name}}</td>
                         <td width="10px">
-                            <a href="{{route('admin.roles.edit',$role)}}" class="btn btn-sm btn-primary float-right" title="Editar"><i class="fas fa-edit"></i>
+                            <a href="{{route('admin.roles.edit',$role)}}" class="btn btn-sm btn-primary float-right" title="Editar rol"><i class="fas fa-edit"></i>
                         </td>
                         <td width="10px">
                             <form action="{{route('admin.roles.destroy',$role)}}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <a href="{{route('admin.roles.destroy',$role)}}" class="btn btn-sm btn-danger float-right" title="Eliminar"><i class="fas fa-trash"></i>
+                                <button type="submit" class="btn btn-sm btn-danger float-right" title="Eliminar rol">
+                                    <i class="fas fa-trash"></i>
+                                </button>                                
                             </form>
                         </td>
                     </tr>

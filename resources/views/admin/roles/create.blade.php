@@ -6,6 +6,11 @@
 
 @section('content')
     <div class="card">
+        @if (session('info'))
+            <div class="alert alert-success">
+                {{session('info')}}
+            </div>
+        @endif
         <form action="{{route('admin.roles.store')}}" method="post">
             @csrf
             <div class="form-group ml-3">
