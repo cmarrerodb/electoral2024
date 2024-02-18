@@ -321,6 +321,7 @@ return [
             'text'        => 'Trabajadores',
             'url'         => 'trabajadores',
             'icon'        => 'fas fa-user-tie',
+            // 'can'         => 'admin.workers.index',
         ],
         [
             'text'    => 'Gráficos',
@@ -478,7 +479,9 @@ return [
             'submenu' => [
                 [
                     'text' => 'Roles',
-                    'url'  => '#',
+                    'url'  => 'roles',
+                    'icon' => 'fas fa-users-cog fa-fw',
+                    // 'can'  => 'admin.roles.index',
                 ],
                 [
                     'text' => 'Permisos',

@@ -8,12 +8,14 @@ use App\Models\Trabajadores;
 
 class TrabajadorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct() {
+        $this->middleware('can')->only('admin.workers.index')->only('index');
+        $this->middleware('can')->only('admin.workers.edit')->only('edit','update');
+        $this->middleware('can')->only('admin.workers.create')->only('create','store');
+    }
+
     public function index()
     {
-        // $trabajadores = Trabajadores::all();
         $trabajadores = DB::table('vtrabajadores')->get();
         $heads = [
             'ACCIONES',

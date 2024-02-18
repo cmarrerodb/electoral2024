@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TrabajadorController;
+use App\Http\Controllers\RolesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,8 @@ Auth::routes();
 Route::get('/home', function() {
     return view('home');
 })->name('home')->middleware('auth');
-Route::middleware(['auth'])->group(function () {
-    Route::resource('trabajadores', TrabajadorController::class);
-});
+// Route::middleware(['auth'])->group(function () {
+    Route::resource('trabajadores', TrabajadorController::class)->names('admin.workers');
+    Route::resource('roles', RolesController::class)->names('admin.roles');
+    // Route::resource('trabajadores', TrabajadorController::class)->middleware('can:admin.workers.index')->names('admin.workers');
+// });
