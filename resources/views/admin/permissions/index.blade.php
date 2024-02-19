@@ -36,7 +36,7 @@
                             </form>                            
                         </td>
                         <td width="10px">
-                            <form action="{{route('admin.permissions.destroy',$permission)}}" method="POST">
+                            <form action="{{route('admin.permissions.destroy',$permission->id)}}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger float-right" title="Eliminar rol">

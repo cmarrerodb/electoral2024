@@ -11,7 +11,7 @@
                 {{session('info')}}
             </div>
         @endif
-        <form action="{{route('admin.roles.store')}}" method="post">
+        <form action="{{route('admin.permissions.store')}}" method="post">
             @csrf
             <div class="form-group ml-3">
                 <label >Nombre</label>
