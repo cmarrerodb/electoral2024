@@ -485,7 +485,9 @@ return [
                 ],
                 [
                     'text' => 'Permisos',
-                    'url'  => '#',
+                    'url'  => 'permisos',
+                    'icon' => 'fas fas fa-key fa-fw',
+                    
                 ],
                 [
                     'text' => 'Permisos Roles',

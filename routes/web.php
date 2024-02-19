@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\PermissionsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TrabajadorController;
 use App\Http\Controllers\RolesController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,5 +26,6 @@ Route::get('/home', function() {
 // Route::middleware(['auth'])->group(function () {
     Route::resource('trabajadores', TrabajadorController::class)->names('admin.workers');
     Route::resource('roles', RolesController::class)->names('admin.roles');
+    Route::resource('permisos', PermissionsController::class)->names('admin.permissions');
     // Route::resource('trabajadores', TrabajadorController::class)->middleware('can:admin.workers.index')->names('admin.workers');
 // });
