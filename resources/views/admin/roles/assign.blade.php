@@ -8,6 +8,9 @@
 <div class="card">
     <form action="{{ route('admin.roles.rol2user') }}" method="POST">
         @csrf
+        <div class="pagination-info">
+            {{ $users->links('vendor.pagination.custom') }}
+        </div>
         <table class="table table-stripped">
             <thead>
                 <tr>
@@ -24,8 +27,7 @@
                         <td>{{$user->name}}</td>
                         <td>{{$user->email}}</td>
                         <td>
-                        <input type="checkbox" name="users[{{ $user->id }}]" value="1" {{ $user->roles->pluck('id')->first()==$id ? 'checked' : '' }}>
-                            
+                            <input type="checkbox" name="users[{{ $user->id }}]" value="1" {{ $user->roles->pluck('id')->first()==$id ? 'checked' : '' }}>
                         </td>
                     </tr>
                 @endforeach
