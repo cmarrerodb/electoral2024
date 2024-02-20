@@ -26,6 +26,8 @@ Route::get('/home', function() {
 // Route::middleware(['auth'])->group(function () {
     Route::resource('trabajadores', TrabajadorController::class)->names('admin.workers');
     Route::resource('roles', RolesController::class)->names('admin.roles');
+    Route::get('roles/{id}/assign', [RolesController::class, 'assign'])->name('admin.roles.assign');
+    Route::post('rol2user', 'RolesController@assign')->name('admin.roles.rol2user');
     Route::resource('permisos', PermissionsController::class)->names('admin.permissions');
     // Route::resource('trabajadores', TrabajadorController::class)->middleware('can:admin.workers.index')->names('admin.workers');
 // });

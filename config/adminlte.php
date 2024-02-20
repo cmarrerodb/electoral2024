@@ -490,8 +490,9 @@ return [
                     
                 ],
                 [
-                    'text' => 'Permisos Roles',
+                    'text' => 'Roles Usuarios',
                     'url'  => '#',
+                    'icon'=> 'fas fa-user-check',
                 ],
                 [
                     'text' => 'Usuarios',

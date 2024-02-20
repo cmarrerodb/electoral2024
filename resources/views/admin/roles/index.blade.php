@@ -17,7 +17,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Rol</th>
-                        <th colspan="2"></th>
+                        <th colspan="3"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,6 +25,16 @@
                     <tr>
                         <td>{{$role->id}}</td>
                         <td>{{$role->name}}</td>
+
+                        <td width="10px">
+                            <form action="{{route('admin.roles.assign',$role)}}" method="GET">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-dark float-right" title="Asignar usuarios a rol">
+                                    <i class="fas fa-user-check"></i>
+                                </button>                                
+                            </form>
+                        </td>
+
                         <td width="10px">
                             <a href="{{route('admin.roles.edit',$role)}}" class="btn btn-sm btn-primary float-right" title="Editar rol"><i class="fas fa-edit"></i>
                         </td>

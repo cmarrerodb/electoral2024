@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 // use Spatie\Permission\Contracts\Permission;
+use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
@@ -97,5 +98,82 @@ class RolesController extends Controller
     {
         $role->delete();
         return redirect()->route('admin.roles.index',$role)->with('info','Rol eliminado exitosamente');
+    }
+    // public function assign($id) {
+    //     $roles = Role::all();
+    //     return view('admin.roles.assign',compact('id','roles'));
+    // }
+    // public function assign($id)
+    // {
+    //     $role = Role::findOrFail($id);
+    //     $name = $role->name;
+    //     $users = User::with('roles');
+    //     // $users = User::with('roles')->paginate(10);
+    //     // $roles = [];   
+    //     // foreach ($users as $user) {
+    //     //     $assigned = $user->roles->contains($role);
+    //     //     $roles[] = [
+    //     //         'id' => $user->id,
+    //     //         'name' => $user->name,
+    //     //         'email' => $user->email,
+    //     //         'assigned' => $assigned,
+    //     //     ];
+    //     // }
+    //     $roles = $users->paginate(10);
+    //     foreach ($roles as $role) {
+    //         $assigned = $role->users->contains($user);
+    //         $roles[] = [
+    //             'id' => $role->id,
+    //             'name' => $role->name,
+    //             'email' => $role->email,
+    //             'assigned' => $assigned,
+    //         ];
+    //     }        
+    //     return view('admin.roles.assign', compact('name','roles'));
+    // }
+    // public function assign($id)
+    // {
+    //     $role = Role::findOrFail($id);
+    //     $name = $role->name;
+    //     $users = User::with('roles')->paginate(10);
+    //     $roles = [];
+    
+    //     foreach ($users as $user) {
+    //         $assigned = $user->roles->contains($role);
+    //         $roles[] = [
+    //             'id' => $user->id,
+    //             'name' => $user->name,
+    //             'email' => $user->email,
+    //             'assigned' => $assigned,
+    //         ];
+    //     }
+    
+    //     return view('admin.roles.assign', compact('name', 'roles','users'));
+    // }    
+    public function assign($id)
+    {
+        $role = Role::findOrFail($id);
+        $name = $role->name;
+        $users = User::with('roles')->paginate(10);
+        $roles = [];
+        foreach ($users as $user) {
+            $assigned = $user->roles->contains($role);
+            $roles[] = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'assigned' => $assigned,
+                'role' => $role,
+            ];
+        }
+        return view('admin.roles.assign', compact('id','name', 'roles','users'));
+    }    
+        public function role2user(Request $request) {
+        // Get the user instance
+        $user = User::find(1);       
+        // Get the role instance
+        $role = Role::findByName('editor');
+        // Assign the role to the user
+        $user->syncRoles([$role]);
     }
 }
