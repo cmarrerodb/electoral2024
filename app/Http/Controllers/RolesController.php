@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+
 class RolesController extends Controller
 {
     public function __construct() {
@@ -150,12 +151,27 @@ class RolesController extends Controller
     
     //     return view('admin.roles.assign', compact('name', 'roles','users'));
     // }    
-    public function assign($id)
-    {
+    // public function assign(Request $request,$id)
+    // {
+        // $role = Role::findOrFail($id);
+        // $name = $role->name;
+        // $users = User::with('roles')->paginate(10);
+
+    public function assign(Request $request, $id) {
+        info($request->all());
+        // if (isset($request->recordsPerPage)) {
+
+        // }
         $role = Role::findOrFail($id);
         $name = $role->name;
-        $users = User::with('roles')->paginate(10);
+        $recordsPerPage = $request->input('recordsPerPage', isset($request->recordsPerPage)?isset($request->recordsPerPage):10); // Valor por defecto es 10
+        // $recordsPerPage = $request->input('recordsPerPage', 10); // Valor por defecto es 10
+        $usersQuery = User::with('roles');
+        $users = $recordsPerPage === 'all' ? $usersQuery->get() : $usersQuery->paginate($recordsPerPage);        
+
         $roles = [];
+
+
         foreach ($users as $user) {
             $assigned = $user->roles->contains($role);
             $roles[] = [
@@ -166,9 +182,9 @@ class RolesController extends Controller
                 'role' => $role,
             ];
         }
-        return view('admin.roles.assign', compact('id','name', 'roles','users'));
+        return view('admin.roles.assign', compact('id','name', 'roles','users','recordsPerPage'));
     }    
-        public function role2user(Request $request) {
+    public function role2user(Request $request) {
         // Get the user instance
         $user = User::find(1);       
         // Get the role instance
