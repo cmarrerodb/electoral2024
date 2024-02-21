@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class RolesController extends Controller
 {
@@ -100,78 +101,14 @@ class RolesController extends Controller
         $role->delete();
         return redirect()->route('admin.roles.index',$role)->with('info','Rol eliminado exitosamente');
     }
-    // public function assign($id) {
-    //     $roles = Role::all();
-    //     return view('admin.roles.assign',compact('id','roles'));
-    // }
-    // public function assign($id)
-    // {
-    //     $role = Role::findOrFail($id);
-    //     $name = $role->name;
-    //     $users = User::with('roles');
-    //     // $users = User::with('roles')->paginate(10);
-    //     // $roles = [];   
-    //     // foreach ($users as $user) {
-    //     //     $assigned = $user->roles->contains($role);
-    //     //     $roles[] = [
-    //     //         'id' => $user->id,
-    //     //         'name' => $user->name,
-    //     //         'email' => $user->email,
-    //     //         'assigned' => $assigned,
-    //     //     ];
-    //     // }
-    //     $roles = $users->paginate(10);
-    //     foreach ($roles as $role) {
-    //         $assigned = $role->users->contains($user);
-    //         $roles[] = [
-    //             'id' => $role->id,
-    //             'name' => $role->name,
-    //             'email' => $role->email,
-    //             'assigned' => $assigned,
-    //         ];
-    //     }        
-    //     return view('admin.roles.assign', compact('name','roles'));
-    // }
-    // public function assign($id)
-    // {
-    //     $role = Role::findOrFail($id);
-    //     $name = $role->name;
-    //     $users = User::with('roles')->paginate(10);
-    //     $roles = [];
-    
-    //     foreach ($users as $user) {
-    //         $assigned = $user->roles->contains($role);
-    //         $roles[] = [
-    //             'id' => $user->id,
-    //             'name' => $user->name,
-    //             'email' => $user->email,
-    //             'assigned' => $assigned,
-    //         ];
-    //     }
-    
-    //     return view('admin.roles.assign', compact('name', 'roles','users'));
-    // }    
-    // public function assign(Request $request,$id)
-    // {
-        // $role = Role::findOrFail($id);
-        // $name = $role->name;
-        // $users = User::with('roles')->paginate(10);
-
     public function assign(Request $request, $id) {
-        info($request->all());
-        // if (isset($request->recordsPerPage)) {
-
-        // }
         $role = Role::findOrFail($id);
         $name = $role->name;
         $recordsPerPage = $request->input('recordsPerPage', isset($request->recordsPerPage)?isset($request->recordsPerPage):10); // Valor por defecto es 10
-        // $recordsPerPage = $request->input('recordsPerPage', 10); // Valor por defecto es 10
         $usersQuery = User::with('roles');
-        $users = $recordsPerPage === 'all' ? $usersQuery->get() : $usersQuery->paginate($recordsPerPage);        
-
+        $users = $recordsPerPage === 'all' ? $usersQuery->get() : $usersQuery->paginate($recordsPerPage);
         $roles = [];
-
-
+        $search = null;
         foreach ($users as $user) {
             $assigned = $user->roles->contains($role);
             $roles[] = [
@@ -182,14 +119,69 @@ class RolesController extends Controller
                 'role' => $role,
             ];
         }
-        return view('admin.roles.assign', compact('id','name', 'roles','users','recordsPerPage'));
-    }    
-    public function role2user(Request $request) {
-        // Get the user instance
-        $user = User::find(1);       
-        // Get the role instance
-        $role = Role::findByName('editor');
-        // Assign the role to the user
-        $user->syncRoles([$role]);
+        return view('admin.roles.assign', compact('id','name', 'roles','users','recordsPerPage','search'));
+    }
+    public function search(Request $request, $id)
+    {
+        $role = Role::findOrFail($id);
+        $name = $role->name;
+        $recordsPerPage = $request->input('recordsPerPage', isset($request->recordsPerPage)?isset($request->recordsPerPage):10);
+        $search = $request->input('search');
+        $usersQuery = User::with('roles');
+        if ($search) {
+            $usersQuery->where('name', 'ilike', "%{$search}%")
+                        ->orWhere('email', 'ilike', "%{$search}%");
+        }
+        $users = $recordsPerPage === 'all' ? $usersQuery->get() : $usersQuery->paginate($recordsPerPage);
+        $roles = [];
+        foreach ($users as $user) {
+            $assigned = $user->roles->contains($role);
+            $roles[] = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'assigned' => $assigned,
+                'role' => $role,
+            ];
+        }
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $collection = collect($roles);
+        $perPage = $recordsPerPage === 'all' ? $collection->count() : $recordsPerPage;
+        $results = $collection->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        $paginatedResults = new LengthAwarePaginator($results, $collection->count(), $perPage, $currentPage, ['path' => LengthAwarePaginator::resolveCurrentPath()]);
+        session(['current_page' => $request->input('current_page', 1)]);
+        return view('admin.roles.assign', compact('id','name', 'roles','users','recordsPerPage', 'search', 'paginatedResults'));
+    }
+    public function rol2user(Request $request)
+    {
+        $rolesArray = $request->users;
+        $roles = collect($rolesArray)->map(function ($roleId, $userId) {
+            $role = Role::findById($roleId);
+            return [
+                'model_id' => $userId,
+                'model_type' => config('permission.models.user'),
+                'role_name' => $role->name,
+            ];
+        })->toArray();
+        $firstKey = key($roles);
+        $rolName = $roles[$firstKey]['role_name'];
+        // $usersWithRole = User::role($rolName)->get();
+        // $usersWithoutRole = User::whereDoesntHave('roles', function ($query) use ($rolName) {
+        //     $query->where('name', $rolName);
+        // })->get(); 
+        // info($usersWithoutRole);
+
+        if (!is_null($rolesArray)) {
+            $userIds = array_keys($rolesArray);
+            $users = User::all();
+            $users->each(function (User $user) use ($rolName) {
+                $user->syncRoles([]); // eliminar el rol de todos los usuarios   
+            });
+            $users = User::whereIn('id', $userIds)->get();
+            $users->each(function (User $user) use ($rolName) {
+                $user->syncRoles($rolName);
+            });
+        }        
+        return redirect()->route('admin.roles.index')->with('success', 'Roles asignados correctamente');
     }
 }
