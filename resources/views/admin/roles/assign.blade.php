@@ -5,6 +5,15 @@
 @stop
 
 @section('content')
+    @if (session('info'))
+        <div class="alert alert-success">
+            {{ session('info') }}
+        </div>
+        @php
+            session()->forget('info');
+        @endphp        
+    @endif
+
     <div class="card">
         <form action="{{ route('admin.roles.search', ['id' => $id]) }}" method="GET" id="search-form">
             <input type="hidden" name="roles" id="roles" value="{{$name}}">
@@ -66,7 +75,7 @@
                     @endforeach
                 </tbody>
             </table>
-            
+
             <button type="submit" class="btn btn-primary">Asignar Usuarios a rol <strong>{{$name}}</strong></button>
         </form>
         @if ($recordsPerPage != 'all' )

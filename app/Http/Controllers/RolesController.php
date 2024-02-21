@@ -165,23 +165,35 @@ class RolesController extends Controller
         })->toArray();
         $firstKey = key($roles);
         $rolName = $roles[$firstKey]['role_name'];
-        // $usersWithRole = User::role($rolName)->get();
-        // $usersWithoutRole = User::whereDoesntHave('roles', function ($query) use ($rolName) {
-        //     $query->where('name', $rolName);
-        // })->get(); 
-        // info($usersWithoutRole);
-
         if (!is_null($rolesArray)) {
             $userIds = array_keys($rolesArray);
             $users = User::all();
             $users->each(function (User $user) use ($rolName) {
-                $user->syncRoles([]); // eliminar el rol de todos los usuarios   
+                $user->syncRoles([]);
             });
             $users = User::whereIn('id', $userIds)->get();
             $users->each(function (User $user) use ($rolName) {
                 $user->syncRoles($rolName);
             });
-        }        
-        return redirect()->route('admin.roles.index')->with('success', 'Roles asignados correctamente');
+        }
+        $role = Role::findOrFail($request->users[$firstKey]);
+        $id = $role->id;
+        $name = $role->name;
+        $recordsPerPage = $request->input('recordsPerPage', isset($request->recordsPerPage)?isset($request->recordsPerPage):10); // Valor por defecto es 10
+        $usersQuery = User::with('roles');
+        $users = $recordsPerPage === 'all' ? $usersQuery->get() : $usersQuery->paginate($recordsPerPage);
+        $roles = [];
+        $search = null;
+        foreach ($users as $user) {
+            $assigned = $user->roles->contains($role);
+            $roles[] = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'assigned' => $assigned,
+                'role' => $role,
+            ];
+        }
+        return view('admin.roles.assign', compact('id','name', 'roles','users','recordsPerPage','search'))->with(session()->flash('info', 'La asignación y eliminación de usuarios al rol ' . $name . ' fue realizada exitosamente'));        
     }
 }
