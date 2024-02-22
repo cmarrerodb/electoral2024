@@ -53,6 +53,7 @@
                     {{ $users->links('vendor.pagination.custom') }}
                 </div>
             @endif
+            <input type="hidden" name="rolName" value = {{$name}}>
             <table class="table table-stripped">
                 <thead>
                     <tr>
