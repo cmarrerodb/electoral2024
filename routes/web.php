@@ -25,6 +25,7 @@ Route::get('/home', function() {
 })->name('home')->middleware('auth');
 Route::middleware(['auth'])->group(function () {
     Route::resource('trabajadores', TrabajadorController::class)->names('admin.workers');
+    Route::get('/trab_tabla',[TrabajadorController::class,'trab_tabla'])->name('trab_tabla');
     Route::resource('roles', RolesController::class)->names('admin.roles');
     Route::get('roles/{id}/assign', [RolesController::class, 'assign'])->name('admin.roles.assign');
     Route::post('rol2user', [RolesController::class, 'rol2user'])->name('admin.roles.rol2user');

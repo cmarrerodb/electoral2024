@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Trabajadores;
+use App\Models\Vtrabajador;
 
 class TrabajadorController extends Controller
 {
@@ -18,27 +19,68 @@ class TrabajadorController extends Controller
 
     public function index()
     {
-        $trabajadores = DB::table('vtrabajadores')->get();
-        $heads = [
-            'ACCIONES',
-            'CÉDULA',
-            'NOMBRE',
-            'ESTADO',
-            'MUNICIPIO',
-            'CIRCUITO',
-            'PARROQUIA',
-            'GABINETE',
-            'ENTE',
-            'DEPENDENCIA',
-            'TELÉFONO',
-            'VOTÓ',
-            'MOVILIZACIÓN',
-            'HORA VOTÓ',
-            'OBSERVACIONES',
-        ];
-        return view('trabajadores',compact('trabajadores','heads'));
+        return view('trabajadores');
     }
 
+    // public function trab_tabla(Request $request)
+    // {
+    //     info($request->all());
+    //     $offset = $request->input('offset', 0);
+    //     $limit = $request->input('limit', 10);
+    
+    //     $query = Vtrabajador::query();
+    
+    //     // Aplicar el filtrado si existe
+    //     if ($request->has('filter')) {
+    //         $filters = json_decode($request->filter, true);
+    //         foreach ($filters as $column => $value) {
+    //             $query->where($column, 'like', '%' . $value . '%');
+    //         }
+    //     }
+    
+    //     // Obtener el total de registros antes de aplicar el límite y el desplazamiento
+    //     $total = $query->count();
+    
+    //     // Aplicar el límite y el desplazamiento
+    //     $trabajadores = $query->skip($offset)->take($limit)->get();
+    
+    //     return response()->json([
+    //         'total' => $total,
+    //         'rows' => $trabajadores
+    //     ]);
+    // }
+    public function trab_tabla(Request $request)
+    {
+        info($request->all());
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 10);
+    
+        $query = Vtrabajador::query();
+    
+        // Aplicar el filtrado si existe
+        if ($request->has('filter')) {
+            $filters = json_decode($request->filter, true);
+            foreach ($filters as $column => $value) {
+                $query->where($column, 'like', '%' . $value . '%');
+            }
+        }
+    
+        // Obtener el total de registros antes de aplicar el límite y el desplazamiento
+        $total = $query->count();
+    
+        // Aplicar el límite y el desplazamiento
+        if ($request->has('limit')) {
+            $trabajadores = $query->skip($offset)->take($limit)->get();
+        } else {
+            $trabajadores = $query->get();
+        }
+    
+        return response()->json([
+            'total' => $total,
+            'rows' => $trabajadores
+        ]);
+    }
+        
     /**
      * Show the form for creating a new resource.
      */
