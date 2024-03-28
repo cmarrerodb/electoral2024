@@ -5,11 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
 class PermissionsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function __construct() {
+        $this->middleware('can:admin.permissions.index')->only('index');
+        $this->middleware('can:admin.permissions.edit')->only('edit');
+        $this->middleware('can:admin.permissions.create')->only('create');
+        $this->middleware('can:admin.permissions.show')->only('show');
+        $this->middleware('can:admin.permissions.destroy')->only('destroy');
+    }    
     public function index()
     {
         $permissions = Permission::all();
@@ -89,5 +98,30 @@ class PermissionsController extends Controller
         $permission->delete();
         return redirect()->route('admin.permissions.index',$permission)->with('info','Permiso eliminado exitosamente');
 
+    }
+    public function search(Request $request)
+    {
+        $permission = Permission::all();
+        $recordsPerPage = $request->input('recordsPerPage', isset($request->recordsPerPage)?isset($request->recordsPerPage):10);
+        $search = $request->input('search');
+        $permissionsQuery = Permission::where('description','like',"%".$request->search."%")->orWhere('name','like',"%".$request->search."%");
+        $permisologia = $permissionsQuery->get();
+        $permisos = $recordsPerPage === 'all' ? $permissionsQuery->get() : $permissionsQuery->paginate($recordsPerPage);
+        $permiso = [];
+        foreach ($permisologia as $perm) {
+            $permiso[] = [
+                'id' => $perm->id,
+                'name' => $perm->name,
+                'description' => $perm->description,
+            ];
+        }
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $collection = collect($permission);
+        $cantRegistros = count($permiso);
+        $perPage = $recordsPerPage === 'all' ? $collection->count() : $recordsPerPage;
+        $results = $collection->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        $paginatedResults = new LengthAwarePaginator($results, $collection->count(), $perPage, $currentPage, ['path' => LengthAwarePaginator::resolveCurrentPath()]);
+        session(['current_page' => $request->input('current_page', 1)]);
+        return view('admin.permissions.index', compact('permiso', 'cantRegistros', 'recordsPerPage', 'search', 'paginatedResults'));
     }
 }

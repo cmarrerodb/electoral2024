@@ -14,9 +14,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class RolesController extends Controller
 {
     public function __construct() {
-        // $this->middleware('can')->only('admin.roles.index')->only('index');
-        // $this->middleware('can')->only('admin.roles.edit')->only('edit','update');
-        // $this->middleware('can')->only('admin.roles.create')->only('create','store');
+        $this->middleware('can:admin.roles.index')->only('index');
+        $this->middleware('can:admin.roles.edit')->only('edit');
+        $this->middleware('can:admin.roles.create')->only('create');
+        $this->middleware('can:admin.roles.show')->only('show');
+        $this->middleware('can:admin.roles.destroy')->only('destroy');
     }
     public function index()
     {
@@ -64,10 +66,6 @@ class RolesController extends Controller
         return view('admin.roles.show',compact('role'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(Request $request, Role $role)
     public function edit(Role $role)
     {
         $permissions = Permission::all();
@@ -152,53 +150,6 @@ class RolesController extends Controller
         session(['current_page' => $request->input('current_page', 1)]);
         return view('admin.roles.assign', compact('id','name', 'roles','users','recordsPerPage', 'search', 'paginatedResults'));
     }
-    // public function rol2user(Request $request)
-    // {
-    //     info($request->all());
-    //     // dd($request->all());
-    //     $rolesArray = $request->users;
-    //     $roles = collect($rolesArray)->map(function ($roleId, $userId) {
-    //         $role = Role::findById($roleId);
-    //         return [
-    //             'model_id' => $userId,
-    //             'model_type' => config('permission.models.user'),
-    //             'role_name' => $role->name,
-    //         ];
-    //     })->toArray();
-    //     $firstKey = key($roles);
-    //     // $rolName = $roles[$firstKey]['role_name'];
-    //     $rolName = $request->rolName;
-    //     if (!is_null($rolesArray)) {
-    //         $userIds = array_keys($rolesArray);
-    //         $users = User::all();
-    //         $users->each(function (User $user) use ($rolName) {
-    //             $user->syncRoles([]);
-    //         });
-    //         $users = User::whereIn('id', $userIds)->get();
-    //         $users->each(function (User $user) use ($rolName) {
-    //             $user->syncRoles($rolName);
-    //         });
-    //     }
-    //     $role = Role::findOrFail($request->users[$firstKey]);
-    //     $id = $role->id;
-    //     $name = $role->name;
-    //     $recordsPerPage = $request->input('recordsPerPage', isset($request->recordsPerPage)?isset($request->recordsPerPage):10); // Valor por defecto es 10
-    //     $usersQuery = User::with('roles');
-    //     $users = $recordsPerPage === 'all' ? $usersQuery->get() : $usersQuery->paginate($recordsPerPage);
-    //     $roles = [];
-    //     $search = null;
-    //     foreach ($users as $user) {
-    //         $assigned = $user->roles->contains($role);
-    //         $roles[] = [
-    //             'id' => $user->id,
-    //             'name' => $user->name,
-    //             'email' => $user->email,
-    //             'assigned' => $assigned,
-    //             'role' => $role,
-    //         ];
-    //     }
-    //     return view('admin.roles.assign', compact('id','name', 'roles','users','recordsPerPage','search'))->with(session()->flash('info', 'La asignación y eliminación de usuarios al rol ' . $name . ' fue realizada exitosamente'));        
-    // }
     public function rol2user(Request $request)
     {
         $rolesArray = $request->users;
@@ -212,24 +163,19 @@ class RolesController extends Controller
         })->toArray();
         $firstKey = key($roles);
         $rolName = $request->rolName;
-        $roleToRemove = Role::findByName($rolName); // Obtén el rol que deseas eliminar
+        $roleToRemove = Role::findByName($rolName);
         if (!is_null($rolesArray)) {
             $userIds = array_keys($rolesArray);
             $users = User::all();
             $users->each(function (User $user) use ($roleToRemove) {
-                $user->removeRole($roleToRemove); // Elimina el rol del usuario
+                $user->removeRole($roleToRemove);
             });
             $users = User::whereIn('id', $userIds)->get();
             $users->each(function (User $user) use ($rolName) {
                 $user->syncRoles($rolName);
             });
         }
-        DB::enableQueryLog();
-        $role = Role::where('name','=',$rolName)->get();
-        // $role = Role::findOrFail($request->users[$firstKey]);
-        info(DB::getQueryLog());
-        DB::disableQueryLog();
-        info($role);
+        $role = Role::where('name', '=', $rolName)->first();
         $id = $role->id;
         $name = $role->name;
         $recordsPerPage = $request->input('recordsPerPage', isset($request->recordsPerPage)?isset($request->recordsPerPage):10); // Valor por defecto es 10

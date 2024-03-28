@@ -9,9 +9,11 @@ use App\Models\Trabajadores;
 class TrabajadorController extends Controller
 {
     public function __construct() {
-        $this->middleware('can')->only('admin.workers.index')->only('index');
-        $this->middleware('can')->only('admin.workers.edit')->only('edit','update');
-        $this->middleware('can')->only('admin.workers.create')->only('create','store');
+        $this->middleware('can:admin.workers.index')->only('index');
+        $this->middleware('can:admin.workers.edit')->only('edit');
+        $this->middleware('can:admin.workers.create')->only('create');
+        $this->middleware('can:admin.workers.show')->only('show');
+        $this->middleware('can:admin.workers.destroy')->only('destroy');
     }
 
     public function index()

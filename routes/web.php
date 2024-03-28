@@ -23,12 +23,14 @@ Auth::routes();
 Route::get('/home', function() {
     return view('home');
 })->name('home')->middleware('auth');
-// Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::resource('trabajadores', TrabajadorController::class)->names('admin.workers');
     Route::resource('roles', RolesController::class)->names('admin.roles');
     Route::get('roles/{id}/assign', [RolesController::class, 'assign'])->name('admin.roles.assign');
     Route::post('rol2user', [RolesController::class, 'rol2user'])->name('admin.roles.rol2user');
     Route::resource('permisos', PermissionsController::class)->names('admin.permissions');
     Route::get('roles/{id}/search', [RolesController::class, 'search'])->name('admin.roles.search');    
+    Route::post('permisos/search', [PermissionsController::class, 'search'])->name('admin.permissions.search');    
+    // Route::get('permisos/search', [PermissionsController::class, 'search'])->name('admin.permissions.search');    
     // Route::resource('trabajadores', TrabajadorController::class)->middleware('can:admin.workers.index')->names('admin.workers');
-// });
+});

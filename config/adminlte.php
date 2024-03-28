@@ -481,19 +481,20 @@ return [
                     'text' => 'Roles',
                     'url'  => 'roles',
                     'icon' => 'fas fa-users-cog fa-fw',
-                    // 'can'  => 'admin.roles.index',
+                    'can'  => 'admin.roles.index',
                 ],
                 [
                     'text' => 'Permisos',
                     'url'  => 'permisos',
                     'icon' => 'fas fas fa-key fa-fw',
+                    'can'  => 'admin.permissions.index',
                     
                 ],
-                [
-                    'text' => 'Roles Usuarios',
-                    'url'  => '#',
-                    'icon'=> 'fas fa-user-check',
-                ],
+                // [
+                //     'text' => 'Roles Usuarios',
+                //     'url'  => '#',
+                //     'icon'=> 'fas fa-user-check',
+                // ],
                 [
                     'text' => 'Usuarios',
                     'url'  => '#',
