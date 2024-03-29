@@ -4,6 +4,77 @@
     <h1 class="m-0 text-dark">Trabajadores</h1>
 @stop
 @section('content')
+    <!-- Modal -->
+    <div class="modal fade" id="mdl-trabajadores" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <label>VOTÓ</label><br/>
+                            <label id="lbl_voto"></label>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <label>HORA</label><br/>
+                            <label id="lbl_hora"></label>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <label>ESTADO</label><br/>
+                            <label id="lbl_estado"></label>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <label>MUNICIPIO</label><br/>
+                            <label id="lbl_municipio"></label>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <label>PARROQUIA</label><br/>
+                            <label id="lbl_parroquia"></label>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <label>GABINETE</label><br/>
+                            <label id="lbl_gabinete"></label>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <label>ENTE</label><br/>
+                            <label id="lbl_ente"></label>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <label>DEPENDENCIA</label><br/>
+                            <label id="lbl_dependencia"></label>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3">
+                            <label>TELÉFONO</label><br/>
+                            <label id="lbl_telefono"></label>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-8">
+                            <label>OBSERVACIONES</label><br/>
+                            <label id="lbl_observaciones"></label>
+                        </div>
+                    </div>
+                    <hr/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="dismiss">Cerrar</button>
+                    <button type="button" id="accept" class="btn btn-primary">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+
     <div class="table-container">
         <div class="scrollup">
             <div class="text-center">
@@ -63,7 +134,6 @@
 @stop
 @section('css')
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-    
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
@@ -77,7 +147,8 @@
     <link href="{{ URL::asset('assets/libs/tui-chart/tui-chart.min.css') }}" rel="stylesheet">
 @stop
 @section('js')
-<script src="{{ asset('/assets/js/jquery-3.5.1.js') }}"></script>
+    <script src="{{ asset('/assets/js/jquery-3.5.1.js') }}"></script>
+    <script src="{{ asset('/assets/libs/bootstrap/bootstrap.min.js') }}"></script>
     <script src="{{ asset('/assets/libs/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('/assets/js/jspdf.min.js') }}"></script>
@@ -153,70 +224,34 @@
 
             btns = [
                 btn_check,btn_view,btn_edit,btn_destroy
-            ].join('')
-            // alert('btns');
-            console.log(btns);
+            ].join('');
             return[btns];
-                // return [
-                //     '<a class="chequear " href="javascript:void(0)" title="Chequear">',
-                //     '<i class="fas fa-check" style="color:#000;"></i>',
-                //     '</a>  ',
-                //     '<a class="ver " href="javascript:void(0)" title="Ver">',
-                //     '<i class="fas fa-eye" style="color:#000;"></i>',
-                //     '</a>  ',
-                //     '<a class="editar " href="javascript:void(0)" title="Editar">',
-                //     '<i class="fas fa-edit" style="color:#000;"></i>',
-                //     '</a>  ',
-                //     '<a class="eliminar" href="javascript:void(0)" title="Eliminar">',
-                //     '<i class="fas fa-trash" style="color:#000;"></i>',
-                //     '</a>'
-                // ].join('');
             }
-//         function operateFormatter(value, row, index) {
-//     let buttons = '';
-
-//     if ({{ auth()->check() && auth()->user()->can('admin.workers.check') }}) {
-//         buttons += '<a class="chequear " href="javascript:void(0)" title="Chequear">' +
-//                     '<i class="fas fa-check" style="color:#000;"></i>' +
-//                   '</a>  ';
-//     }
-
-//     if ({{ auth()->check() && auth()->user()->can('admin.workers.show') }}) {
-//         buttons += '<a class="ver " href="javascript:void(0)" title="Ver">' +
-//                     '<i class="fas fa-eye" style="color:#000;"></i>' +
-//                   '</a>  ';
-//     }
-
-//     if ({{ auth()->check() && auth()->user()->can('admin.workers.edit') }}) {
-//         buttons += '<a class="editar " href="javascript:void(0)" title="Editar">' +
-//                     '<i class="fas fa-edit" style="color:#000;"></i>' +
-//                   '</a>  ';
-//     }
-
-//     if ({{ auth()->check() && auth()->user()->can('admin.workers.destroy') }}) {
-//         buttons += '<a class="eliminar" href="javascript:void(0)" title="Eliminar">' +
-//                     '<i class="fas fa-trash" style="color:#000;"></i>' +
-//                   '</a>';
-//     }
-
-//     return buttons;
-// }        
-            //////////////////        
             window.operateEvents = {
                     'click .chequear': function(e, value, row, index) {
-                        alert('chequear')
-                        // Lógica para ver el registro
                     },
                     'click .ver': function(e, value, row, index) {
-                        alert('ver')
-                        // Lógica para ver el registro
+                        $("#modal-title").html("Ficha del trabajador "+row['cedula']+" "+row["nombre"]);
+                        $("#lbl_voto").html(row["voto"]);
+                        $("#lbl_hora").html(row["hora_voto"]);
+                        $("#lbl_estado").html(row["estado"]);
+                        $("#lbl_municipio").html(row["municipio"]);
+                        $("#lbl_parroquia").html(row["parroquia"]);
+                        $("#lbl_gabinete").html(row["gabinete"]);
+                        $("#lbl_ente").html(row["ente"]);
+                        $("#lbl_dependencia").html(row["nombre_dependencia"]);
+                        $("#lbl_telefono").html(row["telefono"]);
+                        $("#lbl_observaciones").html(row["observaciones"]);
+                        $("#dismiss").show();
+                        $("#accept").hide();
+                        $("#mdl-trabajadores").modal("show")
                     },
                     'click .editar': function(e, value, row, index) {
-                        alert('editar')
+                        console.log('editar')
                         // Lógica para editar el registro
                     },
                     'click .eliminar': function(e, value, row, index) {
-                        alert('eliminar')
+                        console.log('eliminar')
                         // Lógica para eliminar el registro
                     }
                 };        
