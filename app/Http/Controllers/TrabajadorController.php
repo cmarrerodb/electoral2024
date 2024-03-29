@@ -92,4 +92,26 @@ class TrabajadorController extends Controller
     {
         //
     }
+    public function check(Request $request) {
+        // dd($request->all());
+        $cedula = $request->cedula;
+        // $voto = $request->voto === 'SI' ? true : false; // Convertir 'SI' a true, de lo contrario a false
+        $voto = true; // Convertir 'SI' a true, de lo contrario a false
+        $horaVoto = $request->hora_voto;
+    
+        $trabajador = Trabajadores::where('cedula', '=',$cedula)->first(); // Buscar el trabajador por su cédula
+        // dd($trabajador);
+        // if ($trabajador) {
+            // $trabajador->voto = 't'; // Actualizar el campo voto
+            $trabajador->voto = $voto; // Actualizar el campo voto
+            // $trabajador->hora_voto = true; // Actualizar el campo hora_voto
+            $trabajador->hora_voto = $horaVoto; // Actualizar el campo hora_voto
+            $trabajador->save(); // Guardar los cambios en la base de datos
+            return json_encode($trabajador);
+            // Otra lógica después de actualizar los campos
+        // } else {
+        //     // Manejar el caso en el que no se encuentra el trabajador con la cédula proporcionada
+        // }
+
+    }
 }

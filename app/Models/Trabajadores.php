@@ -24,9 +24,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id_dependencia
  * @property string|null $telfono
  * @property bool|null $voto
- * @property int|null $1x10
+//  * @property int|null $1x10
  * @property string|null $observaciones
- * @property time without time zone|null $hora_voto
+//  * @property time without time zone|null $hora_voto
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
@@ -55,7 +55,7 @@ class Trabajadores extends Model
 		'id_ente' => 'int',
 		'voto' => 'bool',
 		'1x10' => 'int',
-		'hora_voto' => 'time without time zone'
+		'hora_voto' => 'datetime:H_i', 
 	];
 
 	protected $fillable = [

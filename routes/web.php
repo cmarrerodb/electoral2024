@@ -32,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('permisos', PermissionsController::class)->names('admin.permissions');
     Route::get('roles/{id}/search', [RolesController::class, 'search'])->name('admin.roles.search');    
     Route::post('permisos/search', [PermissionsController::class, 'search'])->name('admin.permissions.search');    
+    Route::post('trabajador/check', [TrabajadorController::class, 'check'])->name('workers.check');    
     // Route::get('permisos/search', [PermissionsController::class, 'search'])->name('admin.permissions.search');    
     // Route::resource('trabajadores', TrabajadorController::class)->middleware('can:admin.workers.index')->names('admin.workers');
 });

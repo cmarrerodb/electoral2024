@@ -1,6 +1,7 @@
 @extends('adminlte::page')
 @section('title','Trabajadores')
 @section('content_header')
+    <meta name="_token" content="{{ csrf_token() }}">
     <h1 class="m-0 text-dark">Trabajadores</h1>
 @stop
 @section('content')
@@ -194,9 +195,9 @@
             @endphp
 
             @if($usrChk)
-                btn_check = ['<a class="chequear " href="javascript:void(0)" title="Chequear">',
+                btn_check = ['<form> @csrf <a class="chequear " href="javascript:void(0)" title="Chequear">',
                     '<i class="fas fa-check" style="color:#000;"></i>',
-                    '</a>  '].join('')
+                    '</a></form>  '].join('')
             @else
                 btn_check = ''
             @endif            
@@ -228,32 +229,72 @@
             return[btns];
             }
             window.operateEvents = {
-                    'click .chequear': function(e, value, row, index) {
-                    },
-                    'click .ver': function(e, value, row, index) {
-                        $("#modal-title").html("Ficha del trabajador "+row['cedula']+" "+row["nombre"]);
-                        $("#lbl_voto").html(row["voto"]);
-                        $("#lbl_hora").html(row["hora_voto"]);
-                        $("#lbl_estado").html(row["estado"]);
-                        $("#lbl_municipio").html(row["municipio"]);
-                        $("#lbl_parroquia").html(row["parroquia"]);
-                        $("#lbl_gabinete").html(row["gabinete"]);
-                        $("#lbl_ente").html(row["ente"]);
-                        $("#lbl_dependencia").html(row["nombre_dependencia"]);
-                        $("#lbl_telefono").html(row["telefono"]);
-                        $("#lbl_observaciones").html(row["observaciones"]);
-                        $("#dismiss").show();
-                        $("#accept").hide();
-                        $("#mdl-trabajadores").modal("show")
-                    },
-                    'click .editar': function(e, value, row, index) {
-                        console.log('editar')
-                        // Lógica para editar el registro
-                    },
-                    'click .eliminar': function(e, value, row, index) {
-                        console.log('eliminar')
-                        // Lógica para eliminar el registro
-                    }
-                };        
+                'click .chequear': function(e, value, row, index) {
+                    //***************************** */
+					Swal.fire({
+						title: 'Ingrese la hora',
+						html:
+						'<input id="swal-input1" class="swal2-input" type="time" required>',
+						showCancelButton: true,
+						confirmButtonText: 'Aceptar',
+						cancelButtonText: 'Cancelar',
+						preConfirm: () => {
+							const horaVoto = $('#swal-input1').val();
+							if (!horaVoto) {
+								Swal.showValidationMessage('Por favor ingrese la hora');
+							}
+							return horaVoto;
+						}
+					}).then((result) => {
+						if (result.isConfirmed) {
+                            var data = {
+                                cedula: 574598,
+                                voto: 'SI',
+                                hora_voto: result.value,
+                            };
+                            $.ajax({
+                                type: "POST",
+                                url: "/trabajador/check",
+                                data: data,
+                                headers: {
+                                    "X-CSRF-Token": $('meta[name="_token"]').attr("content"),
+                                },
+                                dataType: "JSON",
+                                success: function (response) {
+                                    $('#tbl-trabajadores').bootstrapTable('refresh');
+                                },
+                            });                    
+						}
+					});
+
+                    //***************************** */
+                    //////////////////
+                    //////////////////  
+                },
+                'click .ver': function(e, value, row, index) {
+                    $("#modal-title").html("Ficha del trabajador "+row['cedula']+" "+row["nombre"]);
+                    $("#lbl_voto").html(row["voto"]);
+                    $("#lbl_hora").html(row["hora_voto"]);
+                    $("#lbl_estado").html(row["estado"]);
+                    $("#lbl_municipio").html(row["municipio"]);
+                    $("#lbl_parroquia").html(row["parroquia"]);
+                    $("#lbl_gabinete").html(row["gabinete"]);
+                    $("#lbl_ente").html(row["ente"]);
+                    $("#lbl_dependencia").html(row["nombre_dependencia"]);
+                    $("#lbl_telefono").html(row["telefono"]);
+                    $("#lbl_observaciones").html(row["observaciones"]);
+                    $("#dismiss").show();
+                    $("#accept").hide();
+                    $("#mdl-trabajadores").modal("show")
+                },
+                'click .editar': function(e, value, row, index) {
+                    console.log('editar')
+                    // Lógica para editar el registro
+                },
+                'click .eliminar': function(e, value, row, index) {
+                    console.log('eliminar')
+                    // Lógica para eliminar el registro
+                }
+            };        
     </script>
 @stop
