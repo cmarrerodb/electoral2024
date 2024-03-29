@@ -321,11 +321,12 @@ return [
             'text'        => 'Trabajadores',
             'url'         => 'trabajadores',
             'icon'        => 'fas fa-user-tie',
-            // 'can'         => 'admin.workers.index',
+            'can'         => 'admin.workers.list',
         ],
         [
             'text'    => 'Gráficos',
             'icon'    => 'fas fa-chart-line',
+            'can'     => 'admin.graphics.list',
             'submenu' => [
                 [
                     'text' => 'Movilización Hora',
@@ -344,6 +345,7 @@ return [
         [
             'text'    => 'Reportes',
             'icon'    => 'fas fa-window-restore',
+            'can'     => 'admin.reports.list',
             'submenu' => [
                 [
                     'text' => 'Cumplimiento',
@@ -430,6 +432,7 @@ return [
         [
             'text'    => 'Auxiliares',
             'icon'    => 'fas fa-toolbox',
+            'can'     => 'admin.auxiliary.list',
             'submenu' => [
                 [
                     'text' => 'Auditoría',
@@ -476,6 +479,7 @@ return [
         [
             'text'    => 'Usuarios',
             'icon'    => 'fas fa-users-cog',
+            'can'    => 'admin.users.list',
             'submenu' => [
                 [
                     'text' => 'Roles',

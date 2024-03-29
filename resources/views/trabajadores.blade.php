@@ -15,7 +15,7 @@
         </div>
         <table 
             id="tbl-trabajadores" 
-            class="table table-dark table-hover" 
+            class="table table-hover" 
             data-toggle="table" 
             data-show-columns="true" 
             data-url="{{route('trab_tabla')}}" 
@@ -32,15 +32,17 @@
             data-show-fullscreen="true" 
             data-filter-control="true" 
             data-show-search-clear-button="true" 
-            data-search="true" 
             data-show-multi-sort="true" 
             data-show-print="true" 
             data-locale="es-ES"
             data-search-accent-neutralise="true"
         >
             <thead>
-                <tr><th colspan="12">LISTADO DE TRABAJADORES</th></tr>
                 <tr>
+                    <th colspan="13">LISTADOD DE TRABAJADORES</th>
+                </tr>
+                <tr>
+                    <th data-formatter="operateFormatter" data-events="operateEvents"></th>
                     <th data-field="cedula" data-filter-control="input" data-sortable="true">CEDULA</th>
                     <th data-field="nombre" data-filter-control="input" data-sortable="true">NOMBRE</th>
                     <th data-field="estado" data-filter-control="select" data-sortable="true">ESTADO</th>
@@ -109,8 +111,114 @@
             $(".bajar").click(function() {
                 var tableHeight = $("#tbl-trabajadores")[0].scrollHeight;
                 $("html, body").animate({ scrollTop: tableHeight }, 600);
-
             });  
         });
+        function operateFormatter(value, row, index) {
+            let btns=[];
+            @php
+                $usrChk = auth()->check() && auth()->user()->can('admin.workers.check');
+                $usrViw = auth()->check() && auth()->user()->can('admin.workers.view');
+                $usrEdt = auth()->check() && auth()->user()->can('admin.workers.edit');
+                $usrDes = auth()->check() && auth()->user()->can('admin.workers.destroy');
+            @endphp
+
+            @if($usrChk)
+                btn_check = ['<a class="chequear " href="javascript:void(0)" title="Chequear">',
+                    '<i class="fas fa-check" style="color:#000;"></i>',
+                    '</a>  '].join('')
+            @else
+                btn_check = ''
+            @endif            
+            @if($usrViw)
+                btn_view =['<a class="ver " href="javascript:void(0)" title="Ver">',
+                        '<i class="fas fa-eye" style="color:#000;"></i>',
+                        '</a>  '].join('')
+            @else
+                btn_view = ''
+            @endif            
+            @if($usrEdt)
+                btn_edit = ['<a class="editar " href="javascript:void(0)" title="Editar">',
+                        '<i class="fas fa-edit" style="color:#000;"></i>',
+                        '</a>  '].join('')
+            @else
+                btn_edit = ''
+            @endif            
+            @if($usrDes)
+                btn_destroy = ['<a class="eliminar" href="javascript:void(0)" title="Eliminar">',
+                        '<i class="fas fa-trash" style="color:#000;"></i>',
+                        '</a>'].join('')
+            @else
+                btn_destroy = ''
+            @endif            
+
+            btns = [
+                btn_check,btn_view,btn_edit,btn_destroy
+            ].join('')
+            // alert('btns');
+            console.log(btns);
+            return[btns];
+                // return [
+                //     '<a class="chequear " href="javascript:void(0)" title="Chequear">',
+                //     '<i class="fas fa-check" style="color:#000;"></i>',
+                //     '</a>  ',
+                //     '<a class="ver " href="javascript:void(0)" title="Ver">',
+                //     '<i class="fas fa-eye" style="color:#000;"></i>',
+                //     '</a>  ',
+                //     '<a class="editar " href="javascript:void(0)" title="Editar">',
+                //     '<i class="fas fa-edit" style="color:#000;"></i>',
+                //     '</a>  ',
+                //     '<a class="eliminar" href="javascript:void(0)" title="Eliminar">',
+                //     '<i class="fas fa-trash" style="color:#000;"></i>',
+                //     '</a>'
+                // ].join('');
+            }
+//         function operateFormatter(value, row, index) {
+//     let buttons = '';
+
+//     if ({{ auth()->check() && auth()->user()->can('admin.workers.check') }}) {
+//         buttons += '<a class="chequear " href="javascript:void(0)" title="Chequear">' +
+//                     '<i class="fas fa-check" style="color:#000;"></i>' +
+//                   '</a>  ';
+//     }
+
+//     if ({{ auth()->check() && auth()->user()->can('admin.workers.show') }}) {
+//         buttons += '<a class="ver " href="javascript:void(0)" title="Ver">' +
+//                     '<i class="fas fa-eye" style="color:#000;"></i>' +
+//                   '</a>  ';
+//     }
+
+//     if ({{ auth()->check() && auth()->user()->can('admin.workers.edit') }}) {
+//         buttons += '<a class="editar " href="javascript:void(0)" title="Editar">' +
+//                     '<i class="fas fa-edit" style="color:#000;"></i>' +
+//                   '</a>  ';
+//     }
+
+//     if ({{ auth()->check() && auth()->user()->can('admin.workers.destroy') }}) {
+//         buttons += '<a class="eliminar" href="javascript:void(0)" title="Eliminar">' +
+//                     '<i class="fas fa-trash" style="color:#000;"></i>' +
+//                   '</a>';
+//     }
+
+//     return buttons;
+// }        
+            //////////////////        
+            window.operateEvents = {
+                    'click .chequear': function(e, value, row, index) {
+                        alert('chequear')
+                        // Lógica para ver el registro
+                    },
+                    'click .ver': function(e, value, row, index) {
+                        alert('ver')
+                        // Lógica para ver el registro
+                    },
+                    'click .editar': function(e, value, row, index) {
+                        alert('editar')
+                        // Lógica para editar el registro
+                    },
+                    'click .eliminar': function(e, value, row, index) {
+                        alert('eliminar')
+                        // Lógica para eliminar el registro
+                    }
+                };        
     </script>
 @stop

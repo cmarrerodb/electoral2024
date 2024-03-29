@@ -21,42 +21,11 @@ class TrabajadorController extends Controller
     {
         return view('trabajadores');
     }
-
-    // public function trab_tabla(Request $request)
-    // {
-    //     info($request->all());
-    //     $offset = $request->input('offset', 0);
-    //     $limit = $request->input('limit', 10);
-    
-    //     $query = Vtrabajador::query();
-    
-    //     // Aplicar el filtrado si existe
-    //     if ($request->has('filter')) {
-    //         $filters = json_decode($request->filter, true);
-    //         foreach ($filters as $column => $value) {
-    //             $query->where($column, 'like', '%' . $value . '%');
-    //         }
-    //     }
-    
-    //     // Obtener el total de registros antes de aplicar el límite y el desplazamiento
-    //     $total = $query->count();
-    
-    //     // Aplicar el límite y el desplazamiento
-    //     $trabajadores = $query->skip($offset)->take($limit)->get();
-    
-    //     return response()->json([
-    //         'total' => $total,
-    //         'rows' => $trabajadores
-    //     ]);
-    // }
     public function trab_tabla(Request $request)
     {
-        info($request->all());
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 10);
-    
         $query = Vtrabajador::query();
-    
         // Aplicar el filtrado si existe
         if ($request->has('filter')) {
             $filters = json_decode($request->filter, true);
@@ -64,17 +33,12 @@ class TrabajadorController extends Controller
                 $query->where($column, 'like', '%' . $value . '%');
             }
         }
-    
-        // Obtener el total de registros antes de aplicar el límite y el desplazamiento
         $total = $query->count();
-    
-        // Aplicar el límite y el desplazamiento
         if ($request->has('limit')) {
             $trabajadores = $query->skip($offset)->take($limit)->get();
         } else {
             $trabajadores = $query->get();
         }
-    
         return response()->json([
             'total' => $total,
             'rows' => $trabajadores
