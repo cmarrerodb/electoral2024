@@ -90,7 +90,12 @@ class TrabajadorController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $trabajador = Trabajadores::where('cedula', '=', $id)->first(); // Buscar el registro por cédula
+        if ($trabajador) {
+            $trabajador->deleted_at = now(); // Sustituir el valor de "deleted_at" por el timestamp actual
+            $trabajador->save(); // Guardar el registro actualizado
+        }
+        return json_encode($trabajador);
     }
     public function check(Request $request) {
         // dd($request->all());

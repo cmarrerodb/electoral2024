@@ -196,28 +196,28 @@
 
             @if($usrChk)
                 btn_check = ['<form> @csrf <a class="chequear " href="javascript:void(0)" title="Chequear">',
-                    '<i class="fas fa-check" style="color:#000;"></i>',
+                    '<i class="fas fa-check text-info"></i>',
                     '</a></form>  '].join('')
             @else
                 btn_check = ''
             @endif            
             @if($usrViw)
                 btn_view =['<a class="ver " href="javascript:void(0)" title="Ver">',
-                        '<i class="fas fa-eye" style="color:#000;"></i>',
+                        '<i class="fas fa-eye text-success"></i>',
                         '</a>  '].join('')
             @else
                 btn_view = ''
             @endif            
             @if($usrEdt)
                 btn_edit = ['<a class="editar " href="javascript:void(0)" title="Editar">',
-                        '<i class="fas fa-edit" style="color:#000;"></i>',
+                        '<i class="fas fa-edit text-primary"></i>',
                         '</a>  '].join('')
             @else
                 btn_edit = ''
             @endif            
             @if($usrDes)
                 btn_destroy = ['<a class="eliminar" href="javascript:void(0)" title="Eliminar">',
-                        '<i class="fas fa-trash" style="color:#000;"></i>',
+                        '<i class="fas fa-trash text-danger"></i>',
                         '</a>'].join('')
             @else
                 btn_destroy = ''
@@ -248,7 +248,7 @@
 					}).then((result) => {
 						if (result.isConfirmed) {
                             var data = {
-                                cedula: 574598,
+                                cedula: row['cedula'],
                                 voto: 'SI',
                                 hora_voto: result.value,
                             };
@@ -262,6 +262,12 @@
                                 dataType: "JSON",
                                 success: function (response) {
                                     $('#tbl-trabajadores').bootstrapTable('refresh');
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'HORA REGISTRADA EXITOSAMENTE',
+                                        showConfirmButton: 'Cerrar'
+                                    });
+
                                 },
                             });                    
 						}
@@ -292,8 +298,43 @@
                     // Lógica para editar el registro
                 },
                 'click .eliminar': function(e, value, row, index) {
-                    console.log('eliminar')
-                    // Lógica para eliminar el registro
+                    //***************************** */
+					Swal.fire({
+						title: 'ADVERTENCIA',
+                        html: '¡Esta acción <strong style="color:#f00;">ELIMINARÁ AL TRABAJADOR</strong>! ¿Está seguro que desea continuar',
+                        icon: 'warning',
+						showCancelButton: true,
+						confirmButtonText: 'Aceptar',
+						cancelButtonText: 'Cancelar',
+					}).then((result) => {
+						if (result.isConfirmed) {
+                            // var data = {
+                            //     cedula: row['cedula'],
+                            // };
+                            $.ajax({
+                                type: "DELETE",
+                                url: "trabajadores/"+row['cedula'],
+                                // data: data,
+                                headers: {
+                                    "X-CSRF-Token": $('meta[name="_token"]').attr("content"),
+                                },
+                                dataType: "JSON",
+                                success: function (response) {
+                                    console.log(response);
+                                    $('#tbl-trabajadores').bootstrapTable('refresh');
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'TRABAJADOR ELIMINADO EXITOSAMENTE',
+                                        text: 'El trabajador '+response.nombre+', CI '+ response.cedula+' ha sido borrado exitosamente',
+                                        showConfirmButton: 'Cerrar'
+                                    });
+
+                                },
+                            });                    
+						}
+					});
+
+                    //***************************** */
                 }
             };        
     </script>
